@@ -1,0 +1,257 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Level Navigation Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #f4f4f4;
+            height: 100vh;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-menu li {
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover {
+            background-color: #ddd;
+        }
+
+        .nav-menu ul {
+            list-style: none;
+            padding-left: 15px;
+            margin: 0;
+            display: none;
+        }
+
+        .nav-menu .has-submenu > a::after {
+            content: ' ▾';
+            float: right;
+            transition: transform 0.2s;
+        }
+
+        .nav-menu .has-submenu.active > a::after {
+            transform: rotate(180deg);
+        }
+
+        .nav-menu .has-submenu.active > ul {
+            display: block;
+        }
+
+        .nav-menu .has-submenu > a {
+            cursor: pointer;
+        }
+
+        .nav-menu .leaf > a {
+            cursor: pointer;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .nav-menu .has-submenu > a[aria-expanded="true"]::after {
+            content: ' ▴';
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Navigation</h2>
+        <ul class="nav-menu" id="navMenu" role="navigation"></ul>
+        <div id="errorMessage" class="error-message"></div>
+    </div>
+    <div class="main-content">
+        <h1>Welcome</h1>
+        <p>Select an item from the navigation menu.</p>
+    </div>
+
+    <script>
+        // Embedded JSON menu data (corrected syntax)
+        const menuData = [
+            {
+                "name": "Dashboard",
+                "link": "#dashboard"
+            },
+            {
+                "name": "Shop",
+                "link": "#shop",
+                "submenu": [
+                    {
+                        "name": "Electronics",
+                        "link": "#electronics",
+                        "submenu": [
+                            {"name": "Smartphones", "link": "#smartphones"},
+                            {"name": "Tablets", "link": "#tablets"},
+                            {"name": "Accessories", "link": "#accessories"}
+                        ]
+                    },
+                    {
+                        "name": "Fashion",
+                        "link": "#fashion",
+                        "submenu": [
+                            {"name": "Men's Clothing", "link": "#mens-clothing"},
+                            {"name": "Women's Clothing", "link": "#womens-clothing"}
+                        ]
+                    },
+                    {
+                        "name": "Books",
+                        "link": "#books"
+                    }
+                ]
+            },
+            {
+                "name": "Resources",
+                "link": "#resources",
+                "submenu": [
+                    {"name": "Guides", "link": "#guides"},
+                    {"name": "Tutorials", "link": "#tutorials"},
+                    {"name": "Support", "link": "#support"}
+                ]
+            },
+            {
+                "name": "About",
+                "link": "#about"
+            }
+        ];
+
+        // Function to build the menu
+        function buildMenu(items, parent) {
+            items.forEach(item => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.textContent = item.name;
+
+                if (item.submenu) {
+                    li.classList.add('has-submenu');
+                    a.setAttribute('aria-expanded', 'false');
+                    a.setAttribute('role', 'button');
+                    a.setAttribute('aria-haspopup', 'true');
+                    a.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const isExpanded = li.classList.toggle('active');
+                        a.setAttribute('aria-expanded', isExpanded.toString());
+                    });
+
+                    const ul = document.createElement('ul');
+                    buildMenu(item.submenu, ul);
+                    li.appendChild(a); // Append anchor first
+                    li.appendChild(ul); // Append submenu after anchor
+                } else {
+                    li.classList.add('leaf');
+                    a.href = item.link;
+                    a.setAttribute('role', 'menuitem');
+                    a.addEventListener('click', (e) => {
+                        console.log(`Navigating to ${item.link}`);
+                    });
+                    li.appendChild(a);
+                }
+
+                parent.appendChild(li);
+            });
+        }
+
+        // Initialize menu when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const navMenu = document.getElementById('navMenu');
+            const errorDiv = document.getElementById('errorMessage');
+
+            if (!navMenu) {
+                const errorMsg = 'Error: Navigation menu element not found (ID: navMenu).';
+                console.error(errorMsg);
+                if (errorDiv) errorDiv.textContent = errorMsg;
+                return;
+            }
+
+            try {
+                if (!Array.isArray(menuData)) {
+                    throw new Error('Invalid menu data: Expected an array');
+                }
+                errorDiv.textContent = ''; // Clear any previous error
+                buildMenu(menuData, navMenu);
+            } catch (error) {
+                console.error('Error building menu:', error.message);
+                errorDiv.textContent = `Error: Failed to load menu data. ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
