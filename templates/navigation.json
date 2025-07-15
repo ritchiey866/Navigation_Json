@@ -1,0 +1,347 @@
+[
+  {
+    "id": "1",
+    "title": "Dashboard",
+    "access": "user",
+    "page": "/page1"
+  },
+  {
+    "id": "2",
+    "title": "User Management",
+    "access": "admin",
+    "children": [
+      {
+        "id": "3",
+        "title": "User List",
+        "access": "admin",
+        "page": "/page2"
+      },
+      {
+        "id": "4",
+        "title": "Roles & Permissions",
+        "access": "admin",
+        "children": [
+          {
+            "id": "5",
+            "title": "Role Management",
+            "access": "admin",
+            "page": "/page3"
+          },
+          {
+            "id": "6",
+            "title": "Permission Settings",
+            "access": "admin",
+            "page": "/page4"
+          },
+          {
+            "id": "7",
+            "title": "Access Control",
+            "access": "admin",
+            "children": [
+              {
+                "id": "9",
+                "title": "API Access",
+                "access": "admin",
+                "page": "/page3_2"
+              },
+              {
+                "id": "10",
+                "title": "Configure Menu",
+                "access": "admin",
+                "page": "/navigation"
+              },
+              {
+                "id": "11",
+                "title": "SetUserRole",
+                "access": "admin",
+                "page": "/setRole"
+              }
+            ],
+            "page": "#"
+          }
+        ]
+      },
+      {
+        "id": "12",
+        "title": "User Profiles",
+        "access": "admin",
+        "children": [
+          {
+            "id": "13",
+            "title": "Profile Templates",
+            "access": "admin",
+            "page": "/page2_1"
+          },
+          {
+            "id": "14",
+            "title": "Custom Fields",
+            "access": "admin",
+            "page": "/page2_2"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "15",
+    "title": "System Configuration",
+    "access": "admin",
+    "children": [
+      {
+        "id": "16",
+        "title": "General Settings",
+        "access": "admin",
+        "page": "/page5"
+      },
+      {
+        "id": "17",
+        "title": "Security",
+        "access": "admin",
+        "children": [
+          {
+            "id": "18",
+            "title": "Authentication",
+            "access": "admin",
+            "page": "/page6"
+          },
+          {
+            "id": "19",
+            "title": "Firewall",
+            "access": "admin",
+            "page": "/page7"
+          },
+          {
+            "id": "20",
+            "title": "Encryption",
+            "access": "admin",
+            "children": [
+              {
+                "id": "21",
+                "title": "Data Encryption",
+                "access": "admin",
+                "page": "/page6_1"
+              },
+              {
+                "id": "22",
+                "title": "Key Management",
+                "access": "admin",
+                "page": "/page6_2"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "23",
+        "title": "Integrations",
+        "access": "admin",
+        "children": [
+          {
+            "id": "24",
+            "title": "Third-party Services",
+            "access": "admin",
+            "page": "/page5_1"
+          },
+          {
+            "id": "25",
+            "title": "Webhooks",
+            "access": "admin",
+            "page": "/page5_2"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "26",
+    "title": "Development Tools",
+    "access": "developer",
+    "children": [
+      {
+        "id": "27",
+        "title": "API Documentation",
+        "access": "developer",
+        "page": "/page8"
+      },
+      {
+        "id": "28",
+        "title": "Testing",
+        "access": "developer",
+        "children": [
+          {
+            "id": "29",
+            "title": "Unit Tests",
+            "access": "developer",
+            "page": "/page9"
+          },
+          {
+            "id": "30",
+            "title": "Integration Tests",
+            "access": "developer",
+            "page": "/page10"
+          },
+          {
+            "id": "31",
+            "title": "Performance Tests",
+            "access": "developer",
+            "children": [
+              {
+                "id": "32",
+                "title": "Load Testing",
+                "access": "developer",
+                "page": "/page9_1"
+              },
+              {
+                "id": "33",
+                "title": "Stress Testing",
+                "access": "developer",
+                "page": "/page9_2"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "34",
+        "title": "Deployment",
+        "access": "developer",
+        "children": [
+          {
+            "id": "35",
+            "title": "Environments",
+            "access": "developer",
+            "page": "/page11_1"
+          },
+          {
+            "id": "36",
+            "title": "CI/CD Pipeline",
+            "access": "developer",
+            "page": "/page11_2"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "37",
+    "title": "Reports",
+    "access": "user",
+    "children": [
+      {
+        "id": "38",
+        "title": "Analytics",
+        "access": "user",
+        "page": "/page12"
+      },
+      {
+        "id": "39",
+        "title": "Export",
+        "access": "user",
+        "children": [
+          {
+            "id": "40",
+            "title": "PDF Reports",
+            "access": "user",
+            "page": "/page13"
+          },
+          {
+            "id": "41",
+            "title": "Excel Reports",
+            "access": "user",
+            "page": "/page14"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "42",
+    "title": "Help & Support",
+    "access": "user",
+    "children": [
+      {
+        "id": "43",
+        "title": "Documentation",
+        "access": "user",
+        "page": "/page15"
+      },
+      {
+        "id": "44",
+        "title": "Tickets",
+        "access": "user",
+        "page": "/page16"
+      },
+      {
+        "id": "45",
+        "title": "FAQ",
+        "access": "user",
+        "page": "/page17"
+      },
+      {
+        "id": "46",
+        "title": "Knowledge Base",
+        "access": "user",
+        "children": [
+          {
+            "id": "47",
+            "title": "User Guides",
+            "access": "user",
+            "page": "/page15_1"
+          },
+          {
+            "id": "48",
+            "title": "Troubleshooting",
+            "access": "user",
+            "page": "/page15_2"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "49",
+    "title": "Admin",
+    "access": "admin",
+    "page": "/admin",
+    "children": [
+      {
+        "id": "50",
+        "title": "Configure Navigation",
+        "access": "admin",
+        "page": "/navigation",
+        "children": [
+          {
+            "id": "51",
+            "title": "Check Link Page",
+            "access": "admin",
+            "page": "/navigation/check-leaves"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "52",
+    "title": "NewProject",
+    "access": "admin",
+    "page": "/newProject"
+  },
+  {
+    "id": "53",
+    "title": "Resource Permissions",
+    "access": "admin",
+    "page": "#"
+  },
+  {
+    "id": "54",
+    "title": "Project 1",
+    "access": "admin",
+    "page": "#"
+  },
+  {
+    "id": "55",
+    "title": "Project2",
+    "access": "admin",
+    "page": "/Project2"
+  }
+]

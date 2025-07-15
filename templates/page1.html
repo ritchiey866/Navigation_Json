@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <h1 class="h2 mb-4">Dashboard</h1>
+  
+  <div class="row">
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Quick Stats</h5>
+          <p class="card-text">View your application statistics at a glance.</p>
+          <a href="#" class="btn btn-primary">View Stats</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Recent Activity</h5>
+          <p class="card-text">See what's been happening in your application.</p>
+          <a href="#" class="btn btn-primary">View Activity</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Tasks</h5>
+          <p class="card-text">Manage your pending tasks and assignments.</p>
+          <a href="#" class="btn btn-primary">View Tasks</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-8 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">System Overview</h5>
+          <p class="card-text">This is a placeholder for system overview content.</p>
+          <p>In a real application, this would display charts, graphs, or other visualizations of system data.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Notifications</h5>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">System update available</li>
+            <li class="list-group-item">New user registration</li>
+            <li class="list-group-item">Backup completed successfully</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

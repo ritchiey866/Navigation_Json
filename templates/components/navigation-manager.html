@@ -1,0 +1,355 @@
+{% macro render_navigation_manager() %}
+<div id="navigation-manager" class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3>Navigation Manager</h3>
+        <button class="btn btn-primary" @click="showAddModal = true">
+            <i class="fas fa-plus"></i> Add Item
+        </button>
+    </div>
+    <div class="card-body">
+        <div v-if="loading" class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <div v-else>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Access</th>
+                            <th>Page</th>
+                            <th>Parent</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in flattenedItems" :key="item.id">
+                            <td>
+                                <span :style="{ paddingLeft: item.level * 20 + 'px' }">
+                                    <i v-if="item.has_children" class="fas fa-folder text-warning me-1"></i>
+                                    <i v-else class="fas fa-file text-info me-1"></i>
+                                    [[ item.title ]]
+                                </span>
+                            </td>
+                            <td>
+                                <span :class="getAccessBadgeClass(item.access)">
+                                    [[ item.access ]]
+                                </span>
+                            </td>
+                            <td>[[ item.page || '-' ]]</td>
+                            <td>[[ item.parent_title || 'None' ]]</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-outline-primary" @click="editItem(item)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" @click="confirmDelete(item)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Modal -->
+    <div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="itemModalLabel">[[ isEditing ? 'Edit' : 'Add' ]] Navigation Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form @submit.prevent="saveItem">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" v-model="currentItem.title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="access" class="form-label">Access Level</label>
+                            <select class="form-select" id="access" v-model="currentItem.access" required>
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                                <option value="developer">Developer</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="page" class="form-label">Page URL</label>
+                            <input type="text" class="form-control" id="page" v-model="currentItem.page">
+                            <div class="form-text">Leave empty if this is a parent menu item</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="parent_id" class="form-label">Parent Item</label>
+                            <select class="form-select" id="parent_id" v-model="currentItem.parent_id">
+                                <option value="">None</option>
+                                <option v-for="parent in parentOptions" :key="parent.id" :value="parent.id">
+                                    [[ parent.title ]]
+                                </option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" @click="saveItem">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete the navigation item "[[ itemToDelete.title ]]"?</p>
+                    <p v-if="itemToDelete.has_children" class="text-danger">
+                        <i class="fas fa-exclamation-triangle"></i> This item has children. Deleting it will also delete all child items.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" @click="deleteItem">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import NavigationAPI from '/static/js/navigation-api.js';
+    
+    const { createApp, ref, reactive, onMounted, watch } = Vue;
+    
+    createApp({
+        delimiters: ['[[', ']]'],
+        setup() {
+            const items = ref([]);
+            const flattenedItems = ref([]);
+            const loading = ref(true);
+            const showAddModal = ref(false);
+            const isEditing = ref(false);
+            const currentItem = reactive({
+                id: '',
+                title: '',
+                access: 'user',
+                page: '',
+                parent_id: ''
+            });
+            const itemToDelete = reactive({
+                id: '',
+                title: '',
+                has_children: false
+            });
+            const parentOptions = ref([]);
+            const itemModal = ref(null);
+            const deleteModal = ref(null);
+            
+            // Load items on mount
+            onMounted(async () => {
+                try {
+                    await loadItems();
+                    await loadParentOptions();
+                    
+                    // Initialize Bootstrap modals
+                    itemModal.value = new bootstrap.Modal(document.getElementById('itemModal'));
+                    deleteModal.value = new bootstrap.Modal(document.getElementById('deleteModal'));
+                } catch (error) {
+                    console.error('Error initializing navigation manager:', error);
+                    showAlert('Error loading navigation items', 'danger');
+                } finally {
+                    loading.value = false;
+                }
+            });
+            
+            // Watch for changes to showAddModal
+            watch(showAddModal, (newVal) => {
+                if (newVal) {
+                    resetCurrentItem();
+                    isEditing.value = false;
+                    itemModal.value.show();
+                }
+            });
+            
+            // Load all navigation items
+            const loadItems = async () => {
+                try {
+                    const data = await NavigationAPI.getAllItems();
+                    items.value = data;
+                    flattenItems();
+                } catch (error) {
+                    console.error('Error loading items:', error);
+                    throw error;
+                }
+            };
+            
+            // Load parent options for dropdown
+            const loadParentOptions = async (excludeId = null) => {
+                try {
+                    const options = await NavigationAPI.getParentOptions(excludeId);
+                    parentOptions.value = options;
+                } catch (error) {
+                    console.error('Error loading parent options:', error);
+                    throw error;
+                }
+            };
+            
+            // Flatten the nested items for display in the table
+            const flattenItems = () => {
+                const flattened = [];
+                
+                const processItems = (items, level = 0, parent = null) => {
+                    for (const item of items) {
+                        const flatItem = {
+                            id: item.id,
+                            title: item.title,
+                            access: item.access,
+                            page: item.page || '',
+                            level: level,
+                            parent_title: parent ? parent.title : null,
+                            parent_id: parent ? parent.id : null,
+                            has_children: item.children && item.children.length > 0
+                        };
+                        
+                        flattened.push(flatItem);
+                        
+                        if (item.children && item.children.length > 0) {
+                            processItems(item.children, level + 1, item);
+                        }
+                    }
+                };
+                
+                processItems(items.value);
+                flattenedItems.value = flattened;
+            };
+            
+            // Reset the current item form
+            const resetCurrentItem = () => {
+                currentItem.id = '';
+                currentItem.title = '';
+                currentItem.access = 'user';
+                currentItem.page = '';
+                currentItem.parent_id = '';
+            };
+            
+            // Edit an item
+            const editItem = async (item) => {
+                try {
+                    const itemData = await NavigationAPI.getItemById(item.id);
+                    
+                    currentItem.id = itemData.id;
+                    currentItem.title = itemData.title;
+                    currentItem.access = itemData.access;
+                    currentItem.page = itemData.page || '';
+                    
+                    // Get parent ID from the flattened item
+                    currentItem.parent_id = item.parent_id || '';
+                    
+                    // Reload parent options excluding the current item
+                    await loadParentOptions(item.id);
+                    
+                    isEditing.value = true;
+                    itemModal.value.show();
+                } catch (error) {
+                    console.error('Error editing item:', error);
+                    showAlert('Error loading item details', 'danger');
+                }
+            };
+            
+            // Save an item (create or update)
+            const saveItem = async () => {
+                try {
+                    if (isEditing.value) {
+                        await NavigationAPI.updateItem(currentItem.id, {
+                            title: currentItem.title,
+                            access: currentItem.access,
+                            page: currentItem.page,
+                            parent_id: currentItem.parent_id
+                        });
+                        showAlert('Navigation item updated successfully', 'success');
+                    } else {
+                        await NavigationAPI.createItem({
+                            title: currentItem.title,
+                            access: currentItem.access,
+                            page: currentItem.page,
+                            parent_id: currentItem.parent_id
+                        });
+                        showAlert('Navigation item created successfully', 'success');
+                    }
+                    
+                    itemModal.value.hide();
+                    await loadItems();
+                } catch (error) {
+                    console.error('Error saving item:', error);
+                    showAlert('Error saving navigation item', 'danger');
+                }
+            };
+            
+            // Confirm delete an item
+            const confirmDelete = (item) => {
+                itemToDelete.id = item.id;
+                itemToDelete.title = item.title;
+                itemToDelete.has_children = item.has_children;
+                deleteModal.value.show();
+            };
+            
+            // Delete an item
+            const deleteItem = async () => {
+                try {
+                    await NavigationAPI.deleteItem(itemToDelete.id);
+                    showAlert('Navigation item deleted successfully', 'success');
+                    deleteModal.value.hide();
+                    await loadItems();
+                } catch (error) {
+                    console.error('Error deleting item:', error);
+                    showAlert('Error deleting navigation item', 'danger');
+                }
+            };
+            
+            // Get badge class for access level
+            const getAccessBadgeClass = (access) => {
+                switch (access) {
+                    case 'admin':
+                        return 'badge bg-danger';
+                    case 'developer':
+                        return 'badge bg-warning text-dark';
+                    default:
+                        return 'badge bg-primary';
+                }
+            };
+            
+            // Show alert message
+            const showAlert = (message, type = 'info') => {
+                // You can implement your own alert system here
+                alert(message);
+            };
+            
+            return {
+                items,
+                flattenedItems,
+                loading,
+                showAddModal,
+                isEditing,
+                currentItem,
+                itemToDelete,
+                parentOptions,
+                editItem,
+                saveItem,
+                confirmDelete,
+                deleteItem,
+                getAccessBadgeClass
+            };
+        }
+    }).mount('#navigation-manager');
+</script>
+{% endmacro %} 

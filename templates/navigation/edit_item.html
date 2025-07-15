@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% from "components/breadcrumb.html" import render_breadcrumb %}
+
+{% block title %}Edit Navigation Item{% endblock %}
+
+{% block breadcrumb %}
+  {{ render_breadcrumb("Edit Item", [
+    {"title": "Navigation", "url": url_for('navigation.index')}
+  ]) }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Edit Navigation Item</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" value="{{ item.title }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="access" class="form-label">Access Level</label>
+                            <select class="form-select" id="access" name="access" required>
+                                <option value="user" {% if item.access == 'user' %}selected{% endif %}>User</option>
+                                <option value="admin" {% if item.access == 'admin' %}selected{% endif %}>Admin</option>
+                                <option value="developer" {% if item.access == 'developer' %}selected{% endif %}>Developer</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="page" class="form-label">Page URL</label>
+                            <input type="text" class="form-control" id="page" name="page" value="{{ item.page or '' }}">
+                            <div class="form-text">Leave empty if this is a parent menu item</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="parent_id" class="form-label">Parent Item</label>
+                            <select class="form-select" id="parent_id" name="parent_id">
+                                <option value="">None</option>
+                                {% for parent in parent_options %}
+                                    <option value="{{ parent.id }}" {% if parent.id == current_parent_id %}selected{% endif %}>
+                                        {{ parent.title }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('navigation.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Navigation
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,62 @@
+<h4>Page 1 - Data Verification</h4>
+
+<div class="container mt-3">
+    <!-- Verification Form -->
+    <form id="verificationForm" onsubmit="verifyData(event)">
+        <div class="mb-3">
+            <label for="dataInput" class="form-label">Enter Data to Verify</label>
+            <input type="text" class="form-control" id="dataInput" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Verify Data</button>
+    </form>
+
+    <!-- Results Display Area -->
+    <div id="resultsArea" class="mt-4">
+        <!-- Results will be displayed here -->
+    </div>
+</div>
+
+<script>
+async function verifyData(event) {
+    event.preventDefault();
+    
+    const dataInput = document.getElementById('dataInput').value;
+    const resultsArea = document.getElementById('resultsArea');
+    
+    // Show loading state
+    resultsArea.innerHTML = '<div class="alert alert-info">Verifying data...</div>';
+    
+    try {
+        const response = await fetch('/api/verify', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ data: dataInput })
+        });
+        
+        const result = await response.json();
+        
+        // Display results in a formatted way
+        resultsArea.innerHTML = `
+            <div class="card">
+                <div class="card-header">
+                    Verification Results
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Status: ${result.status}</h5>
+                    <div class="card-text">
+                        <pre>${JSON.stringify(result.details, null, 2)}</pre>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        resultsArea.innerHTML = `
+            <div class="alert alert-danger">
+                Error: ${error.message}
+            </div>
+        `;
+    }
+}
+</script>

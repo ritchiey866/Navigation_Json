@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Set User Access{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Set User Role</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('setAccess.set_user_access') }}">
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Select User Role:</label>
+                            <select id="role" name="role" class="form-select">
+                                <option value="user" {% if session.get('user_role') == 'user' %}selected{% endif %}>User</option>
+                                <option value="admin" {% if session.get('user_role') == 'admin' %}selected{% endif %}>Admin</option>
+                                <option value="developer" {% if session.get('user_role') == 'developer' %}selected{% endif %}>Developer</option>
+                            </select>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Set Role</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

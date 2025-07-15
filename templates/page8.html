@@ -1,0 +1,94 @@
+<h4>API Documentation</h4>
+<div class="container mt-3">
+    <div class="card">
+        <div class="card-header">
+            API Reference
+        </div>
+        <div class="card-body">
+            <div class="accordion" id="apiAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Authentication API
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#apiAccordion">
+                        <div class="accordion-body">
+                            <h5>POST /api/auth/login</h5>
+                            <p>Authenticate a user and return a JWT token.</p>
+                            <div class="bg-light p-3 rounded">
+                                <h6>Request Body:</h6>
+                                <pre>{
+  "username": "string",
+  "password": "string"
+}</pre>
+                                <h6>Response:</h6>
+                                <pre>{
+  "token": "string",
+  "expires_in": 3600
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            User API
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#apiAccordion">
+                        <div class="accordion-body">
+                            <h5>GET /api/users</h5>
+                            <p>Retrieve a list of users.</p>
+                            <div class="bg-light p-3 rounded">
+                                <h6>Headers:</h6>
+                                <pre>Authorization: Bearer {token}</pre>
+                                <h6>Response:</h6>
+                                <pre>{
+  "users": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com"
+    }
+  ]
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Reports API
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#apiAccordion">
+                        <div class="accordion-body">
+                            <h5>POST /api/reports/generate</h5>
+                            <p>Generate a new report.</p>
+                            <div class="bg-light p-3 rounded">
+                                <h6>Headers:</h6>
+                                <pre>Authorization: Bearer {token}</pre>
+                                <h6>Request Body:</h6>
+                                <pre>{
+  "type": "string",
+  "parameters": {
+    "start_date": "2023-01-01",
+    "end_date": "2023-12-31"
+  }
+}</pre>
+                                <h6>Response:</h6>
+                                <pre>{
+  "report_id": "string",
+  "status": "processing"
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

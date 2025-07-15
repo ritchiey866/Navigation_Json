@@ -1,0 +1,93 @@
+[
+  {
+    "title": "UCM",
+    "children": [
+      {
+        "title": "SubM1",
+        "page": "/page1"
+      },
+      {
+        "title": "SubM2",
+        "page": "/page2"
+      }
+    ]
+  },
+  {
+    "title": "Phone Search",
+    "children": [
+      {
+        "title": "SubM1",
+        "page": "/page3"
+      },
+      {
+        "title": "SubM2",
+        "page": "/page4"
+      },
+      {
+        "title": "SubM3",
+        "page": "/page5"
+      },
+      {
+        "title": "SubM3",
+        "page": "/page5"
+      },
+      {
+        "title": "SubMAyv",
+        "page": "/page5"
+      },
+      {
+        "title": "SubMNew",
+        "page": "/page5"
+      }
+    ]
+  },
+  {
+    "title": "Reports",
+    "children": [
+      {
+        "title": "Daily",
+        "children": [
+          {
+            "title": "Log",
+            "page": "/page6"
+          },
+          {
+            "title": "Summary",
+            "page": "/page7"
+          }
+        ]
+      },
+      {
+        "title": "Monthly",
+        "page": "/page8"
+      }
+    ]
+  },
+  {
+    "title": "Settings",
+    "children": [
+      {
+        "title": "Preferences",
+        "children": [
+          {
+            "title": "Audio",
+            "children": [
+              {
+                "title": "Volume",
+                "page": "/page9"
+              },
+              {
+                "title": "Input/Output",
+                "page": "/page10"
+              }
+            ]
+          },
+          {
+            "title": "Display",
+            "page": "/page11"
+          }
+        ]
+      }
+    ]
+  }
+]

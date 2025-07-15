@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% from "components/breadcrumb.html" import render_breadcrumb %}
+
+{% block title %}{{ 'Edit' if user else 'Add' }} User{% endblock %}
+
+{% block breadcrumb %}
+  {{ render_breadcrumb([
+    ("User Management", url_for('page2.index')),
+    ("Edit User" if user else "Add User", None)
+  ]) }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2>{{ 'Edit' if user else 'Add' }} User</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('page2.save_user', user_id=user.id if user else None) }}">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ user.name if user else '' }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ user.email if user else '' }}" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="role" class="form-label">Role</label>
+                                <select class="form-select" id="role" name="role" required>
+                                    <option value="">Select Role</option>
+                                    <option value="admin" {{ 'selected' if user and user.role == 'admin' else '' }}>Admin</option>
+                                    <option value="user" {{ 'selected' if user and user.role == 'user' else '' }}>User</option>
+                                    <option value="developer" {{ 'selected' if user and user.role == 'developer' else '' }}>Developer</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" name="status" required>
+                                    <option value="">Select Status</option>
+                                    <option value="active" {{ 'selected' if user and user.status == 'active' else '' }}>Active</option>
+                                    <option value="pending" {{ 'selected' if user and user.status == 'pending' else '' }}>Pending</option>
+                                    <option value="inactive" {{ 'selected' if user and user.status == 'inactive' else '' }}>Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" {{ 'required' if not user else '' }}>
+                                {% if user %}
+                                <div class="form-text">Leave blank to keep current password</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="confirm_password" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" {{ 'required' if not user else '' }}>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('page2.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Passwords do not match!');
+        }
+    });
+});
+</script>
+{% endblock %} 

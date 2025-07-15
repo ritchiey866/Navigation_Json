@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% from "components/breadcrumb.html" import render_breadcrumb %}
+
+{% block title %}Check Leaf Navigation Items{% endblock %}
+
+{% block breadcrumb %}
+  {{ render_breadcrumb("Check Leaf Items", [
+    {"title": "Navigation", "url": url_for('navigation.index')}
+  ]) }}
+{% endblock %}
+
+{% block styles %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.13.7/css/dataTables.bootstrap5.min.css">
+<style>
+    .dataTables_wrapper {
+        padding: 1rem 0;
+    }
+    .dataTables_length select {
+        min-width: 80px;
+    }
+    .dataTables_filter input {
+        min-width: 250px;
+    }
+    .table-responsive {
+        margin-top: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Leaf Navigation Items</h2>
+                    <p class="text-muted">Items highlighted in red are missing page links</p>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-info-circle"></i> Total Records: <strong id="totalRecords">{{ leaf_items|length }}</strong>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table id="leafItemsTable" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Path</th>
+                                    <th>Access Level</th>
+                                    <th>Page URL</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in leaf_items %}
+                                <tr class="{{ 'table-danger' if not item.has_page else '' }}">
+                                    <td>{{ item.path }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'primary' if item.access == 'admin' else 'info' if item.access == 'developer' else 'secondary' }}">
+                                            {{ item.access }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if item.has_page %}
+                                            <span class="text-success">{{ item.page }}</span>
+                                        {% else %}
+                                            <span class="text-danger">No page link</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('navigation.edit_item', item_id=item.id) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('navigation.index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Navigation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- DataTables -->
+<script src="https://cdn.jsdelivr.net/npm/datatables.net@1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('#leafItemsTable').DataTable({
+        pageLength: 10,
+        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+        order: [[1, 'asc'], [0, 'asc']],
+        language: {
+            search: "Search:",
+            lengthMenu: "Show _MENU_ entries",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            paginate: {
+                first: "First",
+                last: "Last",
+                next: "Next",
+                previous: "Previous"
+            }
+        }
+    });
+});
+</script>
+{% endblock %} 

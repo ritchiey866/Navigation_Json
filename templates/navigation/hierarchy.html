@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% from "components/breadcrumb.html" import render_breadcrumb %}
+
+{% block title %}Navigation Hierarchy{% endblock %}
+
+{% block breadcrumb %}
+  {{ render_breadcrumb("Navigation Hierarchy") }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2>Navigation Hierarchy</h2>
+                    <a href="{{ url_for('navigation.index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Navigation List
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="navigation-hierarchy">
+                        {% for item in navigation_items %}
+                            {% if not item.parent %}
+                                <div class="hierarchy-item">
+                                    <div class="item-content">
+                                        <span class="badge bg-{{ 'primary' if item.access == 'admin' else 'info' if item.access == 'developer' else 'secondary' }}">
+                                            {{ item.access }}
+                                        </span>
+                                        <span class="item-title">{{ item.title }}</span>
+                                        {% if item.page %}
+                                            <span class="item-page">({{ item.page }})</span>
+                                        {% endif %}
+                                    </div>
+                                    {% if item.has_children %}
+                                        <div class="children-container">
+                                            {% for child in item.children %}
+                                                <div class="hierarchy-item">
+                                                    <div class="item-content">
+                                                        <span class="badge bg-{{ 'primary' if child.access == 'admin' else 'info' if child.access == 'developer' else 'secondary' }}">
+                                                            {{ child.access }}
+                                                        </span>
+                                                        <span class="item-title">{{ child.title }}</span>
+                                                        {% if child.page %}
+                                                            <span class="item-page">({{ child.page }})</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    {% if child.children %}
+                                                        <div class="children-container">
+                                                            {% for grandchild in child.children %}
+                                                                <div class="hierarchy-item">
+                                                                    <div class="item-content">
+                                                                        <span class="badge bg-{{ 'primary' if grandchild.access == 'admin' else 'info' if grandchild.access == 'developer' else 'secondary' }}">
+                                                                            {{ grandchild.access }}
+                                                                        </span>
+                                                                        <span class="item-title">{{ grandchild.title }}</span>
+                                                                        {% if grandchild.page %}
+                                                                            <span class="item-page">({{ grandchild.page }})</span>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .navigation-hierarchy {
+        padding: 20px;
+    }
+    
+    .hierarchy-item {
+        margin-bottom: 15px;
+    }
+    
+    .item-content {
+        padding: 8px 12px;
+        border-radius: 4px;
+        background-color: #f8f9fa;
+        border-left: 4px solid #6c757d;
+        margin-bottom: 5px;
+    }
+    
+    .item-title {
+        font-weight: 500;
+        margin-left: 10px;
+    }
+    
+    .item-page {
+        color: #6c757d;
+        font-size: 0.9em;
+        margin-left: 5px;
+    }
+    
+    .children-container {
+        margin-left: 30px;
+        position: relative;
+    }
+    
+    .children-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 15px;
+        bottom: 0;
+        width: 2px;
+        background-color: #dee2e6;
+    }
+    
+    .hierarchy-item .item-content {
+        position: relative;
+    }
+    
+    .hierarchy-item .item-content::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: -15px;
+        width: 15px;
+        height: 2px;
+        background-color: #dee2e6;
+    }
+</style>
+{% endblock %} 

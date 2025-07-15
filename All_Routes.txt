@@ -1,0 +1,116 @@
+# All Routes for the Navigation Management App
+
+## Main Application Routes
+
+1. **Home Page**
+   - URL: `/`
+   - Method: GET
+   - Description: Main landing page of the application
+
+2. **Admin Dashboard**
+   - URL: `/admin`
+   - Method: GET
+   - Description: Admin dashboard page (requires admin access)
+
+3. **Dynamic Page Loading**
+   - URL: `/page<num>`
+   - Method: GET
+   - Description: Loads a specific page by number (e.g., /page1, /page2)
+
+4. **Dynamic Subpage Loading**
+   - URL: `/page<num>_<subnum>`
+   - Method: GET
+   - Description: Loads a specific subpage (e.g., /page1_1, /page2_3)
+
+## Navigation Management Routes
+
+1. **Navigation Dashboard**
+   - URL: `/navigation/`
+   - Method: GET
+   - Description: Main navigation management dashboard
+
+2. **Navigation Hierarchy**
+   - URL: `/navigation/hierarchy`
+   - Method: GET
+   - Description: Visual representation of navigation hierarchy
+
+3. **Create New Navigation Item**
+   - URL: `/navigation/item/new`
+   - Methods: GET, POST
+   - Description: Form to create a new navigation item
+
+4. **Edit Navigation Item**
+   - URL: `/navigation/item/<item_id>/edit`
+   - Methods: GET, POST
+   - Description: Form to edit an existing navigation item
+
+5. **Delete Navigation Item**
+   - URL: `/navigation/item/<item_id>/delete`
+   - Method: POST
+   - Description: Deletes a navigation item
+
+6. **Reorder Navigation Items**
+   - URL: `/navigation/reorder`
+   - Method: POST
+   - Description: Reorders navigation items based on provided order
+
+7. **Check Leaf Items**
+   - URL: `/navigation/check-leaves`
+   - Method: GET
+   - Description: Checks for leaf items without page links
+
+## Navigation API Routes
+
+1. **Get All Navigation Items**
+   - URL: `/api/navigation/items`
+   - Method: GET
+   - Description: Returns all navigation items as JSON
+
+2. **Get Single Navigation Item**
+   - URL: `/api/navigation/items/<item_id>`
+   - Method: GET
+   - Description: Returns a specific navigation item as JSON
+
+3. **Create Navigation Item**
+   - URL: `/api/navigation/items`
+   - Method: POST
+   - Description: Creates a new navigation item
+
+4. **Update Navigation Item**
+   - URL: `/api/navigation/items/<item_id>`
+   - Method: PUT
+   - Description: Updates an existing navigation item
+
+5. **Delete Navigation Item**
+   - URL: `/api/navigation/items/<item_id>`
+   - Method: DELETE
+   - Description: Deletes a navigation item
+
+6. **Reorder Navigation Items**
+   - URL: `/api/navigation/reorder`
+   - Method: POST
+   - Description: Reorders navigation items
+
+7. **Get Parent Options**
+   - URL: `/api/navigation/parent-options`
+   - Method: GET
+   - Description: Gets parent options for dropdowns
+
+## Other Routes
+
+1. **Set Access Control**
+   - URL: `/setAccess`
+   - Method: GET, POST
+   - Description: Sets user access level (admin, developer, user)
+
+2. **API Routes**
+   - URL: `/api/...`
+   - Methods: Various
+   - Description: Various API endpoints for the application
+
+3. **Page2 Routes**
+   - URL: `/page2/...`
+   - Methods: Various
+   - Description: Routes for the Page2 module
+
+Note: All routes that require admin access (like the navigation management routes) will check the user's role and redirect to the home page with an error message if the user doesn't have the required permissions. 

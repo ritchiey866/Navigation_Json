@@ -1,0 +1,33 @@
+{% macro render_nav_item(item, level=0) %}
+  {% if item.access == session.get('user_role', 'user') or item.access == 'user' %}
+    <div class="nav-item {% if item.children %}has-children{% endif %}">
+      {% if item.page %}
+        <a class="nav-link" href="{{ item.page }}">
+          {% if item.children %}
+            <i class="bi bi-folder menu-icon"></i>
+          {% else %}
+            <i class="bi bi-file-earmark-text menu-icon"></i>
+          {% endif %}
+          {{ item.title }}
+        </a>
+      {% else %}
+        <a class="nav-link" href="#">
+          <i class="bi bi-folder menu-icon"></i>
+          {{ item.title }}
+        </a>
+      {% endif %}
+      
+      {% if item.children %}
+        <div class="submenu {% if level == 1 %}submenu-2{% elif level == 2 %}submenu-3{% endif %}">
+          {% for child in item.children %}
+            {{ render_nav_item(child, level + 1) }}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% for item in navigation_data %}
+  {{ render_nav_item(item) }}
+{% endfor %} 
